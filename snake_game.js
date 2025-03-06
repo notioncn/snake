@@ -13,7 +13,7 @@ let lives = 3;
 let gameSpeed = 200;
 let isPaused = false;
 let highScores = JSON.parse(localStorage.getItem('snakeHighScores')) || [];
-let isGameRunning = false;
+let isGameRunning = true;
 
 // 音效
 const eatSound = new Audio('data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU'+Array(300).join('0'));
@@ -100,16 +100,10 @@ function generateMazeObstacles() {
 }
 
 // 添加开始按钮事件监听
-document.getElementById('startBtn').addEventListener('click', () => {
-    if (!isGameRunning) {
-        isGameRunning = true;
-        isPaused = false;
-        resetGame();
-        gameLoop();
-    } else {
-        isPaused = !isPaused;
-    }
-});
+// 自动开始游戏
+isGameRunning = true;
+resetGame();
+gameLoop();
 
 function resetGame() {
     isGameRunning = false;
