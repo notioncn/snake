@@ -238,13 +238,13 @@ function draw() {
 
     const scalePattern = () => {
   const patternCanvas = document.createElement('canvas');
+  patternCanvas.width = patternCanvas.height = gridSize;
   const pctx = patternCanvas.getContext('2d');
-  patternCanvas.width = patternCanvas.height = 20;
   pctx.fillStyle = '#4CAF50';
-  pctx.fillRect(0, 0, 20, 20);
+  pctx.fillRect(0, 0, gridSize, gridSize);
   pctx.fillStyle = '#2E7D32';
   pctx.beginPath();
-  pctx.arc(10, 10, 6, 0, Math.PI*2);
+  pctx.arc(gridSize/2, gridSize/2, gridSize/3, 0, Math.PI*2);
   pctx.fill();
   return ctx.createPattern(patternCanvas, 'repeat');
 };
