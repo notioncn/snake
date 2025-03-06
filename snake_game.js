@@ -100,9 +100,26 @@ function generateMazeObstacles() {
 }
 
 // 添加开始按钮事件监听
-// 自动开始游戏
-isGameRunning = true;
-resetGame();
+// 初始化游戏
+function initGame() {
+  isGameRunning = true;
+  snake = [{x: 10, y: 10}];
+  food = {x: Math.floor(Math.random() * tileCount), y: Math.floor(Math.random() * tileCount)};
+  direction = {x: 0, y: 0};
+  score = 0;
+  lives = 3;
+  gameSpeed = difficulties[difficultySelect.value].speed;
+  obstacles.length = 0;
+  const difficulty = difficulties[difficultySelect.value];
+  obstacles.push(...Array(difficulty.obstacleCount).fill().map(() => ({
+    x: Math.floor(Math.random() * tileCount),
+    y: Math.floor(Math.random() * tileCount)
+  })));
+  draw();
+}
+
+// 启动游戏
+initGame();
 gameLoop();
 
 function resetGame() {

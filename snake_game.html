@@ -171,6 +171,7 @@
 </head>
 <body>
     <div class="game-container">
+        <button class="start-btn" id="startBtn">开始游戏</button>
         <select class="difficulty-select" id="difficultySelect">
             <option value="easy">简单</option>
             <option value="medium">中等</option>
@@ -193,6 +194,14 @@
         <ul class="leaderboard-list" id="leaderboardList">
         </ul>
     </div>
-    <script src="snake_game.js"></script>
+    <script>
+    document.getElementById('startBtn').addEventListener('click', () => {
+        isGameRunning = true;
+        resetGame();
+        gameLoop();
+        document.getElementById('startBtn').style.display = 'none';
+    });
+</script>
+<script src="snake_game.js"></script>
 </body>
 </html>
