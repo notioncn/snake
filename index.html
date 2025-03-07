@@ -139,62 +139,71 @@
         @media (max-width: 600px) {
             body {
                 height: auto;
-                padding: 10px 10px 20px;
+                padding: 5px;
                 min-height: 100vh;
                 box-sizing: border-box;
                 display: flex;
                 flex-direction: column;
                 justify-content: flex-start;
+                gap: 5px;
             }
             #game-container {
                 width: 100%;
-                max-width: calc(100vw - 20px);
+                max-width: calc(100vw - 10px);
             }
             #game-board {
                 width: 100%;
-                height: 0;
-                padding-bottom: 100%;
-                /* 移除以下固定比例设置 */
-                /* max-width: calc(100vw - 20px); */
-                /* max-height: calc(100vw - 20px); */
+                height: 100vw;
+                max-height: calc(100vw - 10px);
                 position: relative;
             }
             h1 {
-                font-size: 24px;
-                margin-bottom: 10px;
+                font-size: 20px;
+                margin: 5px 0;
             }
             #score {
-                font-size: 18px;
+                font-size: 16px;
+                margin: 5px 0;
             }
             #controls {
                 flex-wrap: wrap;
                 justify-content: center;
+                gap: 5px;
+                margin: 5px 0;
             }
             button {
-                padding: 10px 15px;
-                font-size: 16px;
-                margin: 5px;
+                padding: 8px 12px;
+                font-size: 14px;
+                margin: 2px;
             }
             #difficulty-controls {
                 flex-wrap: wrap;
                 justify-content: center;
+                gap: 5px;
+                margin: 5px 0;
             }
             .difficulty-btn {
-                padding: 8px 12px;
-                margin: 3px;
+                padding: 6px 10px;
+                margin: 2px;
+                font-size: 12px;
             }
             #direction-controls {
-                width: 180px;
-                height: 180px;
-                margin: 15px auto;
+                width: 150px;
+                height: 150px;
+                margin: 10px auto;
             }
             .direction-btn {
-                font-size: 24px;
+                font-size: 20px;
                 padding: 0;
-                height: 100%;
             }
             .lives-container {
                 justify-content: center;
+                margin: 5px 0;
+                gap: 3px;
+            }
+            .life-icon {
+                width: 12px;
+                height: 12px;
             }
         }
     </style>

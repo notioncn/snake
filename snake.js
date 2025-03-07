@@ -1,8 +1,8 @@
 // 游戏配置
 const config = {
     gridSize: 20, // 网格大小
-    boardWidth: Math.min(window.innerWidth * (window.innerWidth <= 600 ? 0.95 : 0.7), window.innerHeight * 0.8),
-    boardHeight: Math.min(window.innerHeight * (window.innerWidth <= 600 ? 0.7 : 0.6), window.innerWidth * 0.8),
+    boardWidth: 400, // 固定画布宽度为400像素
+    boardHeight: 400, // 固定画布高度为400像素，与宽度保持一致
     initialSpeed: 150, // 初始速度（毫秒）
     speedIncrease: 3, // 每吃一个食物增加的速度
     // 难度设置
