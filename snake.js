@@ -1,8 +1,8 @@
 // 游戏配置
 const config = {
     gridSize: 20, // 网格大小
-    boardWidth: 400,
-    boardHeight: 400,
+    boardWidth: Math.min(400, window.innerWidth - 40), // 根据屏幕宽度调整
+    boardHeight: Math.min(400, window.innerHeight - 40), // 根据屏幕高度调整
     initialSpeed: 200, // 初始速度（毫秒）
     speedIncrease: 5, // 每吃一个食物增加的速度
     // 难度设置
@@ -345,6 +345,12 @@ function moveSnake() {
         
         // 生成新食物
         generateFood();
+        
+        // 随机调整障碍物数量和位置
+        const currentObstacleCount = config.difficulty[currentDifficulty].obstacleCount;
+        const randomChange = Math.floor(Math.random() * 5) - 2; // -2到2的随机数
+        config.difficulty[currentDifficulty].obstacleCount = Math.max(3, Math.min(20, currentObstacleCount + randomChange));
+        generateObstacles();
         
         // 增加游戏速度（仅在非障碍物碰撞时）
         if (collisionResult !== 'obstacle') {
