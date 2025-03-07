@@ -3,10 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>个人智能知识库</title>
+    <title>贪吃蛇小游戏</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        #game-container {
+            position: relative;
+        }
+        #game-board {
+            width: 400px;
+            height: 400px;
+            border: 2px solid #333;
+            background-color: #fff;
+            position: relative;
+        }
+        #score {
+            margin-top: 10px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        #controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            padding: 8px 16px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            display: none;
+        }
+        #direction-controls {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 5px;
+            margin-top: 20px;
+            width: 150px;
+            height: 150px;
+        }
+        .direction-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .direction-btn:hover {
+            background-color: #45a049;
+        }
+        #up-btn {
+            grid-column: 2;
+            grid-row: 1;
+        }
+        #left-btn {
+            grid-column: 1;
+            grid-row: 2;
+        }
+        #right-btn {
+            grid-column: 3;
+            grid-row: 2;
+        }
+        #down-btn {
+            grid-column: 2;
+            grid-row: 3;
+        }
+        /* 难度选择按钮样式 */
+        #difficulty-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .difficulty-btn {
+            padding: 6px 12px;
+            font-size: 14px;
+            background-color: #607D8B;
+        }
+        .difficulty-btn.active {
+            background-color: #FF5722;
+            font-weight: bold;
+        }
+        /* 生命值显示样式 */
+        .lives-container {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .life-icon {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background-color: #ccc;
+            display: inline-block;
+        }
+        .life-icon.active {
+            background-color: #F44336;
+        }
+        @media (max-width: 600px) {
+            #game-board {
+                width: 300px;
+                height: 300px;
+            }
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>欢迎来到个人智能知识库</h1>
-    <p>请访问 <a href="./snake_game.html">贪吃蛇游戏</a></p>
+    <h1>贪吃蛇小游戏</h1>
+    <div id="game-container">
+        <div id="game-board"></div>
+        <div id="game-over">
+            <h2>游戏结束!</h2>
+            <p>你的得分: <span id="final-score">0</span></p>
+            <button id="restart-button">重新开始</button>
+        </div>
+    </div>
+    <div id="score">得分: 0</div>
+    <div id="controls">
+        <button id="start-button">开始游戏</button>
+        <button id="pause-button">暂停</button>
+    </div>
+    <div id="difficulty-controls">
+        <button id="easy-btn" class="difficulty-btn">初级</button>
+        <button id="medium-btn" class="difficulty-btn active">中级</button>
+        <button id="hard-btn" class="difficulty-btn">地狱级</button>
+    </div>
+    <div id="lives" class="lives-container"></div>
+    
+    <div id="direction-controls">
+        <button id="up-btn" class="direction-btn">↑</button>
+        <button id="left-btn" class="direction-btn">←</button>
+        <button id="right-btn" class="direction-btn">→</button>
+        <button id="down-btn" class="direction-btn">↓</button>
+    </div>
+
+    <script src="snake.js"></script>
 </body>
 </html>
