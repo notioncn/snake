@@ -1,8 +1,8 @@
 // 游戏配置
 const config = {
     gridSize: 20, // 网格大小
-    boardWidth: Math.min(400, window.innerWidth - 40), // 根据屏幕宽度调整
-    boardHeight: Math.min(400, window.innerHeight - 40), // 根据屏幕高度调整
+    boardWidth: Math.min(window.innerWidth * (window.innerWidth <= 600 ? 0.95 : 0.7), window.innerHeight * 0.8),
+    boardHeight: Math.min(window.innerHeight * (window.innerWidth <= 600 ? 0.7 : 0.6), window.innerWidth * 0.8),
     initialSpeed: 150, // 初始速度（毫秒）
     speedIncrease: 3, // 每吃一个食物增加的速度
     // 难度设置
@@ -356,6 +356,11 @@ function drawSnake() {
 
 // 绘制食物
 function drawFood() {
+    // 移除旧的食物元素
+    const oldFood = document.querySelectorAll('.food');
+    oldFood.forEach(food => food.remove());
+    
+    // 创建新的食物元素
     const foodElement = document.createElement('div');
     foodElement.style.zIndex = '9';
     foodElement.className = 'food';
