@@ -3,20 +3,20 @@ const config = {
     gridSize: 20, // 网格大小
     boardWidth: Math.min(400, window.innerWidth - 40), // 根据屏幕宽度调整
     boardHeight: Math.min(400, window.innerHeight - 40), // 根据屏幕高度调整
-    initialSpeed: 200, // 初始速度（毫秒）
-    speedIncrease: 5, // 每吃一个食物增加的速度
+    initialSpeed: 150, // 初始速度（毫秒）
+    speedIncrease: 3, // 每吃一个食物增加的速度
     // 难度设置
     difficulty: {
         easy: {
-            speed: 250, // 初级难度速度慢
+            speed: 180, // 初级难度速度慢
             obstacleCount: 5 // 初级难度障碍物少
         },
         medium: {
-            speed: 180, // 中级难度速度适中
+            speed: 130, // 中级难度速度适中
             obstacleCount: 10 // 中级难度障碍物适中
         },
         hard: {
-            speed: 120, // 地狱级难度速度快
+            speed: 90, // 地狱级难度速度快
             obstacleCount: 15 // 地狱级难度障碍物多
         }
     },
@@ -43,6 +43,9 @@ let gameInterval = null;
 let isPaused = false;
 let gameSpeed = config.initialSpeed;
 let currentDifficulty = 'medium'; // 默认中级难度
+let startTime = null; // 游戏开始时间
+let elapsedTime = 0; // 已经过时间（毫秒）
+let timerInterval = null; // 计时器间隔
 
 // DOM 元素
 const gameBoard = document.getElementById('game-board');
@@ -57,10 +60,50 @@ const easyButton = document.getElementById('easy-btn'); // 初级难度按钮
 const mediumButton = document.getElementById('medium-btn'); // 中级难度按钮
 const hardButton = document.getElementById('hard-btn'); // 地狱级难度按钮
 
+// 计时器函数
+function startTimer() {
+    if (!startTime) {
+        startTime = Date.now() - elapsedTime;
+    }
+    
+    if (!timerInterval) {
+        timerInterval = setInterval(() => {
+            elapsedTime = Date.now() - startTime;
+            updateScore();
+        }, 1000);
+    }
+}
+
+function stopTimer() {
+    if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+}
+
+function resetTimer() {
+    stopTimer();
+    startTime = null;
+    elapsedTime = 0;
+}
+
 // 初始化游戏
 function initGame() {
+    console.log('开始初始化游戏...');
+    
+    // 确保游戏板可见并设置正确尺寸
+    gameBoard.style.display = 'block';
+    gameBoard.style.width = `${config.boardWidth}px`;
+    gameBoard.style.height = `${config.boardHeight}px`;
+    
     // 清空游戏板
     gameBoard.innerHTML = '';
+    
+    console.log('游戏板元素:', gameBoard);
+    if (!gameBoard) {
+        console.error('错误：未找到游戏板元素');
+        return;
+    }
     
     // 重置游戏状态
     snake = [
@@ -74,6 +117,7 @@ function initGame() {
     lives = config.maxLives; // 重置生命值
     gameSpeed = config.difficulty[currentDifficulty].speed; // 根据难度设置速度
     isPaused = false;
+    resetTimer(); // 重置计时器
     
     // 更新分数和生命值显示
     updateScore();
@@ -92,6 +136,16 @@ function initGame() {
     
     // 隐藏游戏结束界面
     gameOverElement.style.display = 'none';
+    
+    // 添加调试日志验证绘图元素
+    console.log('游戏板实际尺寸:', gameBoard.offsetWidth, 'x', gameBoard.offsetHeight);
+    setTimeout(() => {
+        console.log('DOM元素状态:', {
+            snake: document.querySelectorAll('.snake-segment').length,
+            food: document.querySelectorAll('.food').length,
+            obstacles: document.querySelectorAll('.obstacle').length
+        });
+    }, 100);
 }
 
 // 开始游戏
@@ -102,7 +156,9 @@ function startGame() {
     
     gameInterval = setInterval(moveSnake, gameSpeed);
     startButton.textContent = '重新开始';
+    pauseButton.textContent = '暂停'; // 确保暂停按钮显示正确
     isPaused = false;
+    startTimer(); // 开始计时
 }
 
 // 暂停游戏
@@ -111,10 +167,12 @@ function pauseGame() {
         gameInterval = setInterval(moveSnake, gameSpeed);
         pauseButton.textContent = '暂停';
         isPaused = false;
+        startTimer(); // 继续计时
     } else {
         clearInterval(gameInterval);
         pauseButton.textContent = '继续';
         isPaused = true;
+        stopTimer(); // 暂停计时
     }
 }
 
@@ -122,13 +180,17 @@ function pauseGame() {
 function gameOver() {
     clearInterval(gameInterval);
     gameInterval = null;
+    stopTimer(); // 停止计时
     finalScoreElement.textContent = score;
     gameOverElement.style.display = 'block';
 }
 
 // 更新分数
 function updateScore() {
-    scoreElement.textContent = `得分: ${score}`;
+    const minutes = Math.floor(elapsedTime / 60000);
+    const seconds = Math.floor((elapsedTime % 60000) / 1000);
+    const timeStr = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    scoreElement.textContent = `得分: ${score} | 时间: ${timeStr}`;
 }
 
 // 更新生命值
@@ -149,8 +211,8 @@ function generateObstacles() {
     obstacles = [];
     
     // 计算可用的网格数
-    const gridWidth = config.boardWidth / config.gridSize;
-    const gridHeight = config.boardHeight / config.gridSize;
+    const gridWidth = Math.floor(config.boardWidth / config.gridSize);
+    const gridHeight = Math.floor(config.boardHeight / config.gridSize);
     
     // 根据当前难度确定障碍物数量
     const obstacleCount = config.difficulty[currentDifficulty].obstacleCount;
@@ -218,6 +280,7 @@ function drawObstacles() {
         obstacleElement.style.top = `${obstacle.y * config.gridSize}px`;
         obstacleElement.style.backgroundColor = '#8B4513'; // 棕色障碍物
         obstacleElement.style.borderRadius = '2px';
+        obstacleElement.style.zIndex = '8'; // 确保障碍物在适当的层级
         
         gameBoard.appendChild(obstacleElement);
     });
@@ -226,15 +289,15 @@ function drawObstacles() {
 // 生成食物
 function generateFood() {
     // 计算可用的网格数
-    const gridWidth = config.boardWidth / config.gridSize;
-    const gridHeight = config.boardHeight / config.gridSize;
+    const gridWidth = Math.floor(config.boardWidth / config.gridSize);
+    const gridHeight = Math.floor(config.boardHeight / config.gridSize);
     
     // 随机生成食物位置
     let foodPosition;
-    let isOnSnake;
+    let isValid;
     
     do {
-        isOnSnake = false;
+        isValid = true;
         foodPosition = {
             x: Math.floor(Math.random() * gridWidth),
             y: Math.floor(Math.random() * gridHeight)
@@ -243,11 +306,20 @@ function generateFood() {
         // 检查食物是否在蛇身上
         for (let segment of snake) {
             if (segment.x === foodPosition.x && segment.y === foodPosition.y) {
-                isOnSnake = true;
+                isValid = false;
                 break;
             }
         }
-    } while (isOnSnake);
+        
+        // 检查食物是否与障碍物重叠
+        for (let obstacle of obstacles) {
+            if (obstacle.x === foodPosition.x && obstacle.y === foodPosition.y) {
+                isValid = false;
+                break;
+            }
+        }
+        
+    } while (!isValid);
     
     food = foodPosition;
 }
@@ -267,6 +339,7 @@ function drawSnake() {
         snakeSegment.style.position = 'absolute';
         snakeSegment.style.left = `${segment.x * config.gridSize}px`;
         snakeSegment.style.top = `${segment.y * config.gridSize}px`;
+        snakeSegment.style.zIndex = '10'; // 确保蛇在最上层
         
         // 蛇头和蛇身使用不同颜色
         if (index === 0) {
@@ -283,14 +356,8 @@ function drawSnake() {
 
 // 绘制食物
 function drawFood() {
-    // 移除旧的食物
-    const oldFood = document.querySelector('.food');
-    if (oldFood) {
-        oldFood.remove();
-    }
-    
-    // 绘制新的食物
     const foodElement = document.createElement('div');
+    foodElement.style.zIndex = '9';
     foodElement.className = 'food';
     foodElement.style.width = `${config.gridSize}px`;
     foodElement.style.height = `${config.gridSize}px`;
@@ -374,9 +441,16 @@ function checkCollision(head) {
     const gridWidth = config.boardWidth / config.gridSize;
     const gridHeight = config.boardHeight / config.gridSize;
     
-    // 检查是否撞墙
-    if (head.x < 0 || head.x >= gridWidth || head.y < 0 || head.y >= gridHeight) {
-        return true;
+    // 穿墙处理
+    if (head.x < 0) {
+        head.x = gridWidth - 1;
+    } else if (head.x >= gridWidth) {
+        head.x = 0;
+    }
+    if (head.y < 0) {
+        head.y = gridHeight - 1;
+    } else if (head.y >= gridHeight) {
+        head.y = 0;
     }
     
     // 检查是否撞到自己（从第二个段开始检查，因为头部不可能撞到自己）
